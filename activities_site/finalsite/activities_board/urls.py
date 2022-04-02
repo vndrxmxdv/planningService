@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import api_category, api_event, api_user, api_event_detail, api_eventEntry, api_eventLeave, api_user_registration, api_getEventsByUserId, api_getEventsById
+from .views import api_category, api_event, api_user, api_event_detail, api_eventEntry, api_eventLeave, api_user_registration, api_getEventsByUserId, api_getEventsById, api_get_user_by_id
 from django.contrib.auth.views import LoginView
 
 urlpatterns = [
@@ -7,6 +7,7 @@ urlpatterns = [
 	path('api/events', api_event),
 	path('api/events/<int:pk>', api_event_detail),
 	path('api/users', api_user),
+	path('api/users/<int:userId>', api_get_user_by_id),
 	path('api/user/eventEntry', api_eventEntry),
 	path('api/user/eventLeave', api_eventLeave),
 	path('api/auth/registration', api_user_registration),

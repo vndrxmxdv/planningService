@@ -87,9 +87,20 @@ def api_event_detail(request, pk):
 @api_view(['GET'])
 def api_user(request):
     if request.method == 'GET':
-        user = User.objects.all()
-        serializer = UserSerializer(user, many=True)
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
+
+@api_view(['GET'])
+def api_get_user_by_id(request, userId):
+    if request.method == 'GET':
+        try:
+            user = User.objects.get(pk=userId)
+            serializer = UserSerializer(user)
+            return Response(serializer.data)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['POST'])
 def api_user_registration(request):

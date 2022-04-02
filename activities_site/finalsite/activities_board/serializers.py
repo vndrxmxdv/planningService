@@ -14,7 +14,7 @@ class EventSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
+        exclude = ('password')
 
 class RegistationsSerializer(serializers.ModelSerializer):
     class Meta:
