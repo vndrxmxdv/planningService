@@ -68,9 +68,10 @@ def api_event(request):
 def api_event_detail(request, pk):
     try:
         event = Event.objects.get(pk=pk)
+        users = Registrations.objects.filter(event_id=pk).values("user_id")
         if request.method == 'GET':
             serializer = EventSerializer(event)
-            return Response(serializer.data)
+            return Response({'event': serializer.data, 'users': users})
         elif request.method == 'PATCH':
             serializer = EventSerializer(event, data=request.data, partial=True)
             if serializer.is_valid():
@@ -106,6 +107,7 @@ def api_get_user_by_id(request, userId):
 def api_user_registration(request):
     if request.method == 'POST':
         serializer = UserSerializer(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

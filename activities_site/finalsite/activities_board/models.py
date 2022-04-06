@@ -6,15 +6,16 @@ class Event(models.Model):
 	eventName = models.CharField(max_length=50, verbose_name='Название')
 	content = models.TextField(null=True, blank=True, verbose_name='Описание')
 	eventFormat = models.BooleanField(default=False, verbose_name='Онлайн')
-	startTime = models.DateTimeField(db_index=True, verbose_name='Время начала') # присваиваем индекс, чтобы сортировать по дате проведения
-	endTime = models.DateTimeField(null=True, blank=True, verbose_name='Время окончания') # не обязательно к заполнению
+	startTime = models.DateTimeField(db_index=True, verbose_name='Время начала') 
+	# присваиваем индекс, чтобы сортировать по дате проведения
+	endTime = models.DateTimeField(null=True, blank=True, verbose_name='Время окончания') 
+	# не обязательно к заполнению
 	location = models.TextField(null=True, blank=True, verbose_name='Место проведения')
-
 	published = models.DateTimeField(auto_now_add=True, db_index=True,verbose_name='Время публикации')
 	# автоматически вносим текущее время, присваиваем индекс, чтобы сортировать по дате публикаци
+	maxParticipants = models.IntegerField(default=1, verbose_name='Допускается участников')
+	currentParticipants = models.IntegerField(default=1, verbose_name="Кол-во участников")
 	organizer = models.ForeignKey('User', on_delete=models.PROTECT, verbose_name='Организатор')
-
-
 	category = models.ManyToManyField('Category', blank=True, verbose_name='Категория') # связи категорий с ивентами
 
 
@@ -32,7 +33,7 @@ class User(models.Model):
 	surname = models.CharField(max_length=20, verbose_name='Фамилия')
 	email = models.EmailField()
 	password = models.CharField(max_length=30, verbose_name='Пароль')
-	events = models.ManyToManyField(Event, blank=True, verbose_name='Зарегестрирован на мероприятия', through='Registrations') # здесь будут связи пользователей с ивентами
+	events = models.ManyToManyField(Event, verbose_name='Зарегестрирован на мероприятия', through='Registrations') # здесь будут связи пользователей с ивентами
 	userStatus = models.IntegerField(default=0)
 
 	class Meta:
@@ -52,6 +53,9 @@ class Registrations(models.Model):
 			event=self.event
 		)
 		if q.exists() <= 0:
+			selected_event = Event.objects.get(id=self.event)
+			selected_event.currentParticipants = selected_event.currentParticipants + 1
+			selected_event.save()
 			super(Registrations, self).save(*args, **kwargs)
 
 	class Meta:
