@@ -107,7 +107,7 @@ def api_get_user_by_id(request, userId):
 def api_user_registration(request):
     if request.method == 'POST':
         serializer = UserSerializer(data=request.data)
-
+        
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -117,7 +117,10 @@ def api_user_registration(request):
 def api_eventEntry(request):
     if request.method == 'POST':
         serializer = RegistationsSerializer(data=request.data)
-        if serializer.is_valid():
+        registration_exists = Registrations.objects.filter(user=request.data['user'], event=request.data['event']).count() > 0
+        if registration_exists:
+            return Response(status=status.HTTP)
+        if serializer.is_valid(): 
             serializer.save()
             return Response(status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -132,6 +135,7 @@ def api_eventLeave(request):
             return Response(status=status.HTTP_200_OK)
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['GET'])
 def api_getEventsByUserId(request, userId):

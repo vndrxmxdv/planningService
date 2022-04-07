@@ -52,10 +52,7 @@ class Registrations(models.Model):
 			user=self.user,
 			event=self.event
 		)
-		if q.exists() <= 0:
-			selected_event = Event.objects.get(id=self.event)
-			selected_event.currentParticipants = selected_event.currentParticipants + 1
-			selected_event.save()
+		if (not q.exists()):
 			super(Registrations, self).save(*args, **kwargs)
 
 	class Meta:
