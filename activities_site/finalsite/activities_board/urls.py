@@ -13,5 +13,4 @@ urlpatterns = [
 	path('api/auth/registration', api_user_registration),
 	path('api/events/getEventsByUserId/<int:userId>', api_getEventsByUserId),
 	path('api/events/filter=<str:id_category>', api_getEventsById),
-
 ]
